@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panda Popote</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+    
+</body>
+</html>
+<header>
+    <h1>Welcome to Panda Popote</h1>
+    <nav>
+        <a href="/predict" style="float: right;">Predict</a>
+    </nav>
+</header>
+<main>
+    <section>
+        <h2>About Us</h2>
+        <p>We help farmers predict the best crops to plant based on the current conditions. Our system can predict the following 22 crops:</p>
+        <ul>
+            <li>Apple</li>
+            <li>Banana</li>
+            <li>Blackgram</li>
+            <li>Chickpea</li>
+            <li>Coconut</li>
+            <li>Coffee</li>
+            <li>Cotton</li>
+            <li>Grapes</li>
+            <li>Jute</li>
+            <li>Kidneybeans</li>
+            <li>Lentil</li>
+            <li>Maize</li>
+            <li>Mango</li>
+            <li>Mothbeans</li>
+            <li>Mungbean</li>
+            <li>Muskmelon</li>
+            <li>Orange</li>
+            <li>Papaya</li>
+            <li>Pigeonpeas</li>
+            <li>Pomegranate</li>
+            <li>Rice</li>
+            <li>Watermelon</li>
+        </ul>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2023 Panda Popote. All rights reserved.</p>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.querySelector('header');
+        header.style.transition = 'all 0.5s ease-in-out';
+        header.style.transform = 'translateY(-100px)';
+        setTimeout(() => {
+            header.style.transform = 'translateY(0)';
+        }, 500);
+    });
+</script>
