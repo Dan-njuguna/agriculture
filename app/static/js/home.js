@@ -1,10 +1,4 @@
-const homePageEvent = document.addEventListener("click", predict() {
+document.addEventListener("click", function() {
     console.log("Predicting...");
-    fetch('/predict', {
-        method: 'POST',
-        body: JSON.stringify({}),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    window.location.href = '../../templates/prediction/prediction.html';
 });

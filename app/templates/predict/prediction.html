@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Prediction</title>
+    <link rel="stylesheet" href="../../../static/css/prediction/style.css">
+</head>
+<body>
+    <form>
+        <p>Enter the required factors below:</p>
+        
+        <fieldset>
+            <legend>Climatic Factors</legend>
+            <label for="rainfall">Rainfall (mm):</label>
+            <input type="text" id="rainfall" name="rainfall" required><br><br>
+            <label for="temperature">Temperature (°C):</label>
+            <input type="text" id="temperature" name="temperature" required><br><br>
+            <label for="humidity">Humidity (%):</label>
+            <input type="text" id="humidity" name="humidity" required><br><br>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Nutrient Factors</legend>
+            <label for="nitrogen">Nitrogen - N (mg/kg):</label>
+            <input type="text" id="nitrogen" name="nitrogen" required><br><br>
+            <label for="phosphorus">Phosphorus - P (mg/kg):</label>
+            <input type="text" id="phosphorus" name="phosphorus" required><br><br>
+            <label for="potassium">Potassium - K (mg/kg):</label>
+            <input type="text" id="potassium" name="potassium" required><br><br>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Soil pH</legend>
+            <label for="ph">PH:</label>
+            <input type="text" id="ph" name="ph" required><br><br>
+        </fieldset>
+    </form>
+</body>
+</html>

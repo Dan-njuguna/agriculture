@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: url('../img/farm-background.jpeg') no-repeat center center fixed;
+    background: url('../../img/farm-background.jpeg') no-repeat center center fixed;
     background-size: cover;
     color: #2e4d28; /* Dark green for text */
 }
