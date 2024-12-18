@@ -31,16 +31,28 @@ app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "app/static"))
 # Set up Jinja2 templates
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "app/templates"))
 
+# Plant classes to be predicted
 classes = ['apple', 'banana', 'blackgram', 'chickpea', 'coconut', 'coffee', \
        'cotton', 'grapes', 'jute', 'kidneybeans', 'lentil', 'maize', \
        'mango', 'mothbeans', 'mungbean', 'muskmelon', 'orange', 'papaya', \
        'pigeonpeas', 'pomegranate', 'rice', 'watermelon']
 
+
+async def get_model():
+    with open(MODEL_PATH, 'rb') as file:
+        model = pickle.load(file)
+    return model
+
+
 async def predict_pipeline(factors: Dict):
     model = await get_model()
+    logging.info("Model loaded!")
+
+    # convert factors to a dataframe
+    factors = {k: [v] for k, v in factors.items()}
     print("Model loaded! Predicting...")
     try:
-        prediction = model.predict([[factors['N'], factors['P'], factors['K'], factors['temperature'], factors['humidity'], factors['ph'], factors['rainfall']]])
+        prediction = model.predict(factors)
         logging.info(f"Prediction: {prediction}")
         logging.info(f"Predicted class: {classes[prediction[0]]}")
 
@@ -49,10 +61,6 @@ async def predict_pipeline(factors: Dict):
         return "Error predicting the crop"
     return prediction, classes[prediction[0]]
 
-async def get_model():
-    with open(MODEL_PATH, 'rb') as file:
-        model = pickle.load(file)
-    return model
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
@@ -60,6 +68,4 @@ async def read_root(request: Request):
 
 @app.post("/predict", response_model=Prediction)
 async def predict_crop(request: Request, crop: CropPrediction):
-    prediction, class_name = await predict_pipeline(crop.dict())
-    
-    return {"prediction": prediction[0].tolist(), "class_name": class_name}
+    return templates.TemplateResponse("predict/prediction.html", {"request": request, "crop": crop})
