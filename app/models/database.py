@@ -1,3 +1,6 @@
+import os
+os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+
 from pydantic import BaseModel
 from typing import List, Optional
 
