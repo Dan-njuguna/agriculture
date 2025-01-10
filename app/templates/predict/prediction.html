@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../../static/css/prediction/style.css">
 </head>
 <body>
-    <form>
+    <form method="post" action="/predict/form"></form>
         <p>Enter the required factors below:</p>
         
         <fieldset>
@@ -35,6 +35,8 @@
             <label for="ph">PH:</label>
             <input type="text" id="ph" name="ph" required><br><br>
         </fieldset>
+        
+        <button type="submit">Predict</button>
     </form>
 </body>
 </html>
