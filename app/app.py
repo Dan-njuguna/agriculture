@@ -1,7 +1,7 @@
 import os
 os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -17,6 +17,15 @@ import logging
 
 # Create the FastAPI app
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your needs
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 getLogger().setLevel('INFO')
 
@@ -66,6 +75,20 @@ async def predict_pipeline(factors: Dict):
 async def read_root(request: Request):
     return templates.TemplateResponse("home/index.html", {"request": request})
 
-@app.post("/predict", response_model=Prediction)
-async def predict_crop(request: Request, crop: CropPrediction):
-    return templates.TemplateResponse("predict/prediction.html", {"request": request, "crop": crop})
+@app.post("/predict/form", response_class=HTMLResponse)
+async def predict_crop_form(request: Request, nitrogen: float = Form(...), phosphorus: float = Form(...), potassium: float = Form(...), temperature: float = Form(...), humidity: float = Form(...), ph: float = Form(...), rainfall: float = Form(...)):
+    factors = {
+        "nitrogen": nitrogen,
+        "phosphorus": phosphorus,
+        "potassium": potassium,
+        "temperature": temperature,
+        "humidity": humidity,
+        "ph": ph,
+        "rainfall": rainfall
+    }
+    prediction, predict_class = await predict_pipeline(factors)
+    return templates.TemplateResponse("prediction/result.html", {"request": request, "prediction": prediction, "predict_class": predict_class})
+
+@app.get("/predict/", response_class=HTMLResponse)
+async def predict_crop_html(request: Request):
+    return templates.TemplateResponse("prediction/prediction.html", {"request": request})
