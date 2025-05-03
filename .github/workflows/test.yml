@@ -49,6 +49,7 @@ jobs:
           - name: Run Docker Container
             run: |
               docker run -d -p 8000:8000 mkulima-api
-              sleep 30
+              echo "Waiting for the API to start..."
+              sleep 60
               curl -f http://localhost:8000/docs
               docker stop $(docker ps -q --filter ancestor=mkulima-api)
