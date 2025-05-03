@@ -10,9 +10,14 @@ import os
 import pickle
 import pandas as pd
 
+LOG_PATH = os.path.join("logs", "api.log")
+if not os.path.exists("logs"):
+    os.makedirs("logs")
+
+
 # Basic Logging configuration
 logging.basicConfig(level="INFO")
-file_handler = logging.FileHandler("runs/api.log")
+file_handler = logging.FileHandler(LOG_PATH)
 formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 logger = logging.getLogger(__name__)
