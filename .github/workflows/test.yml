@@ -1,0 +1,54 @@
+name: "Mkulima API Test"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+    api-test:
+        runs-on: ubuntu-20.04
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+
+          - name: Set up Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: '3.12'
+
+          - name: Install dependencies
+            run: |
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+
+          - name: Run API tests
+            run: |
+              uvicorn main:app &
+              API_PID=$!
+              sleep 30
+              kill $API_PID
+              wait $API_PID || true
+    
+    docker-test:
+        runs-on: ubuntu-20.04
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v1
+
+          - name: Build Docker Image
+            run: |
+              docker build -t mkulima-api .
+          
+          - name: Run Docker Container
+            run: |
+              docker run -d -p 8000:8000 mkulima-api
+              sleep 30
+              curl -f http://localhost:8000/docs
+              docker stop $(docker ps -q --filter ancestor=mkulima-api)
