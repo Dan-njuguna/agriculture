@@ -1,0 +1,17 @@
+name: "agripredict"
+
+services:
+  api:
+    container_name: "agripredict-api"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "65535:8000" # Just Coz I am crazy af
+    volumes:
+      - .:/app
+
+networks:
+  agripredict-network:
+    driver: bridge
