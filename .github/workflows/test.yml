@@ -44,12 +44,11 @@ jobs:
 
           - name: Build Docker Image
             run: |
-              docker build -t mkulima-api .
+              docker compose up -d --build
           
-          - name: Run Docker Container
+          - name: Test API endpoint from docker container
             run: |
-              docker run -d -p 8000:8000 mkulima-api
               echo "Waiting for the API to start..."
               sleep 60
-              curl -f http://localhost:8000/docs
+              curl -f http://localhost:65535/docs
               docker stop $(docker ps -q --filter ancestor=mkulima-api)
