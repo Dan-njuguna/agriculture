@@ -101,6 +101,9 @@ async def predict(request: UserInput):
 
         result = ""
         prediction_index = int(prediction[0])
+        probability = model.predict_proba(data)
+        logger.info(f"Model prediction index: {prediction_index}")
+
         # Check if the prediction index produced by the model is in the classes.
         if 0 <= prediction_index < len(prediction_classes):
             result = prediction_classes[prediction_index]
@@ -115,7 +118,8 @@ async def predict(request: UserInput):
         return {
             "status": status,
             "index": [prediction_index],
-            "class": [result]
+            "class": [result],
+            "probability": [probability[0][prediction_index]]
         }
 
     except Exception as e:
@@ -123,5 +127,6 @@ async def predict(request: UserInput):
         return {
             "status": "failure",
             "index": None,
-            "class": ""
+            "class": "",
+            "probability": None
         }

@@ -1,5 +1,13 @@
 ## CONDITIONS FAVOURABLE PLANTING DIFFERENT _CROPS_
 
+## User Guide
+
+1. Preproces the raw data:
+
+```bash
+python ./src/preprocess.py --data_path data/agriculture.xlsx --encode label --scale N --scale P --scale K --scale temperature --scale humidity --scale ph --scale rainfall
+```
+
 ### About Dataset
 
 ---
