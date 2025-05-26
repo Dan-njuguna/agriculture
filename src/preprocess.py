@@ -53,6 +53,31 @@ class IDataLoader(ABC):
     @abstractmethod
     def load() -> pd.DataFrame:
         raise NotImplementedError
+    
+# TODO: Define a data splitter for train and test set
+class IDataSplitter(ABC):
+    """Interface for data splitter"""
+    @abstractmethod
+    def split(data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
+        """Splits data into train and test sets"""
+        raise NotImplementedError
+
+
+# TODO: Create a feature Engineer
+class IFeatureEngineer(ABC):
+    """Interface for all feature engineering steps"""
+    @abstractmethod
+    def engineer(data: pd.DataFrame) -> pd.DataFrame:
+        """This runs the Feature engineer and performs engineering on target column"""
+        raise NotImplementedError
+
+
+# TODO: Create a datasaver
+class IDataSaver(ABC):
+    """Interface for the data saver (saves data to csv files)"""
+    @abstractmethod
+    def save(data: pd.DataFrame, path: str) -> bool:
+        raise NotImplementedError
 
 
 # TODO: XLSX Data Loader
@@ -70,7 +95,7 @@ class XLSXDataLoader(IDataLoader):
     def load(self) -> pd.DataFrame:
         """Loads XLSX data"""
         try:
-            logger.info(f"✅ Loading XLSX File from path {self.path} ⬇️⬇️⬇️")
+            logger.info(f"✅ Loading XLSX File from path {self.path} ...")
             data = pd.read_excel(self.path, engine=self.engine)
             return data
         
@@ -79,14 +104,28 @@ class XLSXDataLoader(IDataLoader):
             raise
 
 
-# TODO: Define a data splitter for train and test set
-class IDataSplitter(ABC):
-    """Interface for data splitter"""
-    @abstractmethod
-    def split(data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
-        """Splits data into train and test sets"""
-        raise NotImplementedError
+# TODO: CSV Data loader for use in the training pipeline
+class CSVDataLoader(IDataLoader):
+    """This class loads csv data from a given path"""
+    def __init__(
+            self,
+            path: str
+    ):
+        super().__init__()
+        self.path = path
     
+    def load(self) -> pd.DataFrame:
+        """loads csv data from given path"""
+        try:
+            logger.info(f"✅ Loading CSV File from path {self.path} ...")
+            data = pd.read_csv(self.path)
+            logger.info(f"✅ Successfully loaded CSV data ...\n{data.head()}")
+            return data
+
+        except Exception as e:
+            logger.info(f"❌ Loading data failed ...")
+            raise
+
 
 class TrainTestSplitter(IDataSplitter):
     """This class splits data into train and tests"""
@@ -133,15 +172,6 @@ class TrainTestSplitter(IDataSplitter):
         except Exception as e:
             logger.info(f"Failed to split data {e}")
             raise
-
-
-# TODO: Create a feature Engineer
-class IFeatureEngineer(ABC):
-    """Interface for all feature engineering steps"""
-    @abstractmethod
-    def engineer(data: pd.DataFrame) -> pd.DataFrame:
-        """This runs the Feature engineer and performs engineering on target column"""
-        raise NotImplementedError
 
 
 # TODO: Scaler for numerical columns
@@ -290,14 +320,6 @@ class BasicLabelEncoder(IFeatureEngineer):
         else:
             data = self.transform(data)
             return data
-
-
-# TODO: Create a datasaver
-class IDataSaver(ABC):
-    """Interface for the data saver (saves data to csv files)"""
-    @abstractmethod
-    def save(data: pd.DataFrame, path: str) -> bool:
-        raise NotImplementedError
 
 
 class CSVDataSaver(IDataSaver):
