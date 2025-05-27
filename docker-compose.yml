@@ -11,7 +11,7 @@ services:
       - "65535:8000" # Just Coz I am crazy af
     volumes:
       - .:/app
-      - ./logs:app/logs/
+      - ./logs:/app/logs/
 
 networks:
   agripredict-network:
