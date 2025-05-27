@@ -100,7 +100,7 @@ class XLSXDataLoader(IDataLoader):
             return data
         
         except Exception as e:
-            logger.info(f"❌ Loading data failed ...")
+            logger.error(f"❌ Loading data failed ...")
             raise
 
 
@@ -123,7 +123,7 @@ class CSVDataLoader(IDataLoader):
             return data
 
         except Exception as e:
-            logger.info(f"❌ Loading data failed ...")
+            logger.error(f"❌ Loading data failed ...")
             raise
 
 
@@ -170,7 +170,7 @@ class TrainTestSplitter(IDataSplitter):
                 }
         
         except Exception as e:
-            logger.info(f"Failed to split data {e}")
+            logger.error(f"Failed to split data {e}")
             raise
 
 
@@ -213,6 +213,7 @@ class BasicScaler(IFeatureEngineer):
             logger.info(f"Successfully transformed column {self.column}")
             return data
         else:
+            logger.erro(f"❌ No data fitted to scaler object ...")
             raise NotFittedError
 
     def engineer(
