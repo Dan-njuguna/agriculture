@@ -9,30 +9,36 @@ DESCRIPTION:
 """
 
 import os
+import sys
 import logging
 from pathlib import Path
 
 import pandas as pd
-import pickle
+import joblib
 
-# TODO: Define constants
-LOGS_DIR = os.path.join(Path(__file__).parent.parent, "logs", "utils.log")
-if not os.path.exists(Path(LOGS_DIR).resolve()):
-    os.makedirs(Path(LOGS_DIR).parent, exist_ok=True)
+PROJECT_ROOT = Path(__file__).parent.parent
+LOGS_DIR = PROJECT_ROOT / "logs"
 
 
 # TODO: Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-file_handler = logging.FileHandler(
-    LOGS_DIR,
-    encoding="utf-8"
-)
-formatter = logging.Formatter(
-    fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+def setup_logging(
+    log_file: str
+):
+    """Setup logging configuration"""
+    log_file = LOGS_DIR / f"{log_file}"
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file, encoding="utf-8"),
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    return logging.getLogger(__name__)
+
+
+logger = setup_logging("utils.log")
 
 
 # TODO: Define function to save data to csv
@@ -46,6 +52,9 @@ def save_to_csv(
 
     logger.info(f"Saving data to csv in path {path} ...")
     try:
+        if "index" in data.columns:
+            data.drop(columns=["index"], inplace=True)
+
         data.to_csv(path, index=False)
 
     except Exception as e:
@@ -68,7 +77,7 @@ def save_pickle(
     logger.info(f"Saving model to pickle in path {path} ...")
     try:
         with open(path, "wb") as f:
-            pickle.dump(model, f)
+            joblib.dump(model, f)
     
     except Exception as e:
         logger.error(f"Failed to save model to {path}: {e}")
@@ -78,9 +87,21 @@ def save_pickle(
     return True
 
 
-# TODO: Load pickle file
+# # TODO: Load pickle file
 def load_pickle(
         path: str
 ):
     """Loads a pickle file in a give path and returns the loaded object"""
-    pass
+    try:
+        logger.info(f"Starting to load pickle file from path {path}")
+
+        with open(path, "rb") as f:
+            model = joblib.load(f)
+
+        logger.info(f"Successfully loaded file of type {type(model)}")
+
+        return model
+
+    except Exception as e:
+        logger.error(f"Failed to load pickle file: {e}")
+        raise
