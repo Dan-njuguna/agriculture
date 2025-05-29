@@ -1,4 +1,4 @@
-name: "Mkulima API Test"
+name: "Agripredict Test"
 
 on:
   push:
@@ -50,5 +50,5 @@ jobs:
             run: |
               echo "Waiting for the API to start..."
               sleep 60
-              curl -f http://localhost:65535/docs
-              docker stop $(docker ps -q --filter ancestor=mkulima-api)
+              curl -f http://localhost:8000/docs
+              docker stop $(docker ps -q --filter ancestor=agripredict)

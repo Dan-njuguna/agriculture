@@ -73,16 +73,16 @@ def save_pickle(
     """Saves pickle file to a given path"""
     if not os.path.exists(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path), exist_ok=True)
-    
+
     logger.info(f"Saving model to pickle in path {path} ...")
     try:
         with open(path, "wb") as f:
             joblib.dump(model, f)
-    
+
     except Exception as e:
         logger.error(f"Failed to save model to {path}: {e}")
         return False
-    
+
     logger.info(f"Model saved to {path}")
     return True
 
