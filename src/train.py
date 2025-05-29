@@ -9,7 +9,6 @@ DESCRIPTION:
 """
 
 import sys
-import logging
 import joblib
 import warnings
 from pathlib import Path
@@ -28,37 +27,18 @@ import pandas as pd
 import numpy as np
 
 sys.path.append(str(Path(__file__).parent.parent))
-from src.utils import save_to_csv
+from src.utils import save_to_csv, setup_logging
 from src.preprocess import CSVDataLoader
 
 # TODO: Define constants
 PROJECT_ROOT = Path(__file__).parent.parent
-LOGS_DIR = PROJECT_ROOT / "logs"
 MODELS_DIR = PROJECT_ROOT / "model"
 TRAIN_PATH = PROJECT_ROOT / "data" / "processed"
 
-# Create directories if they don't exist
-for directory in [LOGS_DIR, MODELS_DIR]:
-    directory.mkdir(parents=True, exist_ok=True)
 
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
-# TODO: Configure logging
-def setup_logging():
-    """Setup logging configuration"""
-    log_file = LOGS_DIR / "train.log"
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(log_file, encoding="utf-8"),
-            logging.StreamHandler(sys.stdout)  # Also log to console
-        ]
-    )
-    return logging.getLogger(__name__)
-
-
-logger = setup_logging()
+logger = setup_logging("train.log")
 
 
 # TODO: Create a trainer interface
