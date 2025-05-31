@@ -68,7 +68,7 @@ jobs:
           RETRY_INTERVAL=5
 
           for i in $(seq 1 $MAX_RETRIES); do
-            if curl -f -s http://localhost:65535/health; then
+            if curl -f -s http://127.0.0.1:65535/health; then
               echo "API is ready after $((i * RETRY_INTERVAL)) seconds!"
               exit 0
             fi
