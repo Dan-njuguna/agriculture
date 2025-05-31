@@ -3,10 +3,10 @@
 import sys
 sys.dont_write_bytecode = True
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 import os
 from pathlib import Path
-import joblib # Not directly used, but kept as it was in original
 import pandas as pd
 sys.path.append(str(Path(__file__).parent))
 from src.utils import setup_logging, load_pickle
@@ -50,6 +50,16 @@ encoder = load_pickle(LABEL_ENC)
 
 # Get the classes from the encoder. These are the human-readable labels.
 prediction_classes = encoder.classes_
+
+
+@app.get("/")
+async def read_root():
+    """
+    Root endpoint for the API.
+    Returns a welcome message.
+    """
+    return {"message": "Welcome to the AgriPredict API!"}
+
 
 @app.post("/predict")
 async def predict(request: UserInput):
@@ -125,3 +135,12 @@ async def predict(request: UserInput):
             "class": "",
             "probability": None
         }
+
+
+@app.get("/health", response_class=JSONResponse)
+async def health_check():
+    """
+    Health check endpoint for the API.
+    Returns a success status if the API is running.
+    """
+    return {"status": "ok", "message": "API is healthy and running!"}
