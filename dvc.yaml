@@ -1,0 +1,30 @@
+stages:
+  preprocess:
+    cmd: python3 src/preprocess.py --data_path data/agriculture.xlsx
+    deps:
+      - data/agriculture.xlsx
+      - src/preprocess.py
+      - src/utils.py
+    outs:
+      - data/processed/test.csv
+      - data/processed/train.csv
+      - model/encoders/label_encoder.pkl
+      - model/scalers/humidity_scaler.pkl
+      - model/scalers/K_scaler.pkl
+      - model/scalers/N_scaler.pkl
+      - model/scalers/P_scaler.pkl
+      - model/scalers/ph_scaler.pkl
+      - model/scalers/rainfall_scaler.pkl
+      - model/scalers/temperature_scaler.pkl
+
+  train:
+    cmd: python3 src/train.py
+    deps:
+      - data/processed/train.csv
+      - src/train.py
+      - src/utils.py
+      - src/preprocess.py
+    outs:
+      - model/LogisticRegression_best_model.pkl
+      - model/RandomForest_best_model.pkl
+      - model/SVM_best_model.pkl

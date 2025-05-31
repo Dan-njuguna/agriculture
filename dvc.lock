@@ -1,0 +1,93 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python3 src/preprocess.py --data_path data/agriculture.xlsx
+    deps:
+    - path: data/agriculture.xlsx
+      hash: md5
+      md5: 3b09e5de4076e185ff3ac59a80117df7
+      size: 134034
+    - path: src/preprocess.py
+      hash: md5
+      md5: 118eec190e7b7d48ff6c287862b42413
+      size: 14173
+      isexec: true
+    - path: src/utils.py
+      hash: md5
+      md5: de37dc15ee28ffa684e9c328d2e3c530
+      size: 2546
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d96cade0e7cd9af72951031802090114
+      size: 56093
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 74a7f9dee20917392a7b35f8c76bfe6c
+      size: 224180
+    - path: model/encoders/label_encoder.pkl
+      hash: md5
+      md5: 99820ec0cb3b3bb69470a33e77105d62
+      size: 696
+    - path: model/scalers/K_scaler.pkl
+      hash: md5
+      md5: 331b386be747b04d48a2902d400b18c2
+      size: 975
+    - path: model/scalers/N_scaler.pkl
+      hash: md5
+      md5: 8eeadfc12c2880693b541e56d40a2eb4
+      size: 975
+    - path: model/scalers/P_scaler.pkl
+      hash: md5
+      md5: bb04539d6374de19d5baee339a63e2ee
+      size: 975
+    - path: model/scalers/humidity_scaler.pkl
+      hash: md5
+      md5: 6be327d2a4dbfaed4372b48abc58b251
+      size: 975
+    - path: model/scalers/ph_scaler.pkl
+      hash: md5
+      md5: 856494bee8d0e7118a91c590cc7e7581
+      size: 975
+    - path: model/scalers/rainfall_scaler.pkl
+      hash: md5
+      md5: e2749b3dab625f3911dcfc4998e69e30
+      size: 975
+    - path: model/scalers/temperature_scaler.pkl
+      hash: md5
+      md5: 3db09077bdd4e25102bb0da448475b67
+      size: 975
+  train:
+    cmd: python3 src/train.py
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 74a7f9dee20917392a7b35f8c76bfe6c
+      size: 224180
+    - path: src/preprocess.py
+      hash: md5
+      md5: 118eec190e7b7d48ff6c287862b42413
+      size: 14173
+      isexec: true
+    - path: src/train.py
+      hash: md5
+      md5: aa61651a0943ab114f0f92042632145a
+      size: 13913
+      isexec: true
+    - path: src/utils.py
+      hash: md5
+      md5: de37dc15ee28ffa684e9c328d2e3c530
+      size: 2546
+    outs:
+    - path: model/LogisticRegression_best_model.pkl
+      hash: md5
+      md5: 42f0d3dfe26618102ba977a5bbf0b9e9
+      size: 3353
+    - path: model/RandomForest_best_model.pkl
+      hash: md5
+      md5: 03676fe684130463c8236c7e2103df81
+      size: 7284242
+    - path: model/SVM_best_model.pkl
+      hash: md5
+      md5: 6a6e756755c1ff34b7d84772c856b989
+      size: 261893

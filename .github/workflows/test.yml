@@ -22,6 +22,8 @@ jobs:
 
       - name: Setup DVC
         uses: iterative/setup-dvc@v1
+        with:
+          dvc-version: '2.58.0'
 
       # - name: Setup CML
       #   uses: iterative/setup-cml@v1
@@ -61,5 +63,5 @@ jobs:
         run: |
           echo "Waiting for the API to start..."
           sleep 60
-          curl -f http://localhost:65535/predict
+          curl -f http://localhost:65535/docs
           docker stop $(docker ps -q --filter ancestor=agripredict)
