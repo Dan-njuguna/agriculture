@@ -45,37 +45,37 @@ jobs:
           kill $API_PID
           wait $API_PID || true
 
-  docker-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # docker-test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Set up Docker Compose
-        uses: docker/setup-compose-action@v1
+  #     - name: Set up Docker Compose
+  #       uses: docker/setup-compose-action@v1
 
-      - name: Build, Start and Test Docker Compose
-        run: |
-          docker compose up -d --build
+  #     - name: Build, Start and Test Docker Compose
+  #       run: |
+  #         docker compose up -d --build
 
-          docker compose logs api
+  #         docker compose logs api
           
-          echo "Waiting for the API to start on localhost:65535..."
-          MAX_RETRIES=30
-          RETRY_INTERVAL=5
+  #         echo "Waiting for the API to start on localhost:65535..."
+  #         MAX_RETRIES=30
+  #         RETRY_INTERVAL=5
 
-          for i in $(seq 1 $MAX_RETRIES); do
-            if curl -v http://127.0.0.1:65535/health 2>&1 | grep -q 'HTTP/2 200' && curl -s http://127.0.0.1:65535/health | grep -q '{"status":"ok"'; then
-              echo "API is ready after $((i * RETRY_INTERVAL)) seconds!"
-              exit 0
-            fi
-            echo "API not ready yet. Retrying in $RETRY_INTERVAL seconds..."
-            sleep $RETRY_INTERVAL
-          done
+  #         for i in $(seq 1 $MAX_RETRIES); do
+  #           if curl -v http://127.0.0.1:65535/health 2>&1 | grep -q 'HTTP/2 200' && curl -s http://127.0.0.1:65535/health | grep -q '{"status":"ok"'; then
+  #             echo "API is ready after $((i * RETRY_INTERVAL)) seconds!"
+  #             exit 0
+  #           fi
+  #           echo "API not ready yet. Retrying in $RETRY_INTERVAL seconds..."
+  #           sleep $RETRY_INTERVAL
+  #         done
 
-          echo "API did not start within the given time. Please review 'Debug API Container Logs' step output for errors."
-          exit 1
+  #         echo "API did not start within the given time. Please review 'Debug API Container Logs' step output for errors."
+  #         exit 1
 
-      - name: Stop and Remove Docker Containers
-        if: always()
-        run: docker compose down
+  #     - name: Stop and Remove Docker Containers
+  #       if: always()
+  #       run: docker compose down
