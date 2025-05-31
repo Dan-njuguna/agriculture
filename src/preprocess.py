@@ -53,7 +53,8 @@ class IDataLoader(ABC):
     @abstractmethod
     def load() -> pd.DataFrame:
         raise NotImplementedError
-    
+
+
 # TODO: Define a data splitter for train and test set
 class IDataSplitter(ABC):
     """Interface for data splitter"""
@@ -91,14 +92,14 @@ class XLSXDataLoader(IDataLoader):
         super().__init__()
         self.path = path
         self.engine = engine
-    
+
     def load(self) -> pd.DataFrame:
         """Loads XLSX data"""
         try:
             logger.info(f"✅ Loading XLSX File from path {self.path} ...")
             data = pd.read_excel(self.path, engine=self.engine)
             return data
-        
+
         except Exception as e:
             logger.error(f"❌ Loading data failed ...")
             raise
@@ -113,7 +114,7 @@ class CSVDataLoader(IDataLoader):
     ):
         super().__init__()
         self.path = path
-    
+
     def load(self) -> pd.DataFrame:
         """loads csv data from given path"""
         try:
@@ -140,7 +141,6 @@ class TrainTestSplitter(IDataSplitter):
         self.stratify = stratify
         self.column = stratify_column
 
-    
     def split(self, data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
         """Splits data to train and test sets"""
         try:
@@ -156,7 +156,7 @@ class TrainTestSplitter(IDataSplitter):
                     "train": train.reset_index(),
                     "test": test.reset_index()
                 }
-            
+
             else:
                 train, test = train_test_split(
                     data,
@@ -168,7 +168,7 @@ class TrainTestSplitter(IDataSplitter):
                     "train": train.reset_index(),
                     "test": test.reset_index()
                 }
-        
+
         except Exception as e:
             logger.error(f"Failed to split data {e}")
             raise
@@ -185,7 +185,6 @@ class BasicScaler(IFeatureEngineer):
         self.scaler = MinMaxScaler()
         self.column = column
         self.fitted = False
-    
 
     def fit(
             self,
@@ -195,14 +194,14 @@ class BasicScaler(IFeatureEngineer):
         if self.fitted:
             logger.warning(f"Column {self.column} has been fitted already ...")
             return
-        
+
         try:
             self.scaler.fit(data[[self.column]])
             self.fitted = True
-        
+
         except Exception as e:
             logger.error(f"Failed to fit the scaler on the column {self.column}, error {e}")
-    
+
     def transform(
         self,
         data: pd.DataFrame
@@ -258,7 +257,6 @@ class BasicLabelEncoder(IFeatureEngineer):
         self.encoder = LabelEncoder()
         self.fitted = False
 
-    
     def fit(
             self,
             data: pd.DataFrame
@@ -267,15 +265,17 @@ class BasicLabelEncoder(IFeatureEngineer):
         if self.fitted:
             logger.warning(f"Column {self.column} has been fitted already ...")
             return
-        
+
         try:
             self.encoder.fit(data[self.column])
             self.fitted = True
-        
+
+
         except Exception as e:
             logger.error(f"Failed to fit the encoder on the column {self.column}, error {e}")
             raise
-    
+
+
     def transform(
         self,
         data: pd.DataFrame
@@ -299,10 +299,10 @@ class BasicLabelEncoder(IFeatureEngineer):
             self.fit(data)
             if save_encoder:
                 encoder_path = os.path.join(
-                        Path(__file__).parent.parent, 
-                        "model/encoders", 
+                        Path(__file__).parent.parent,
+                        "model/encoders",
                         f"{self.column}_encoder.pkl"
-                    )
+                )
 
                 status = save_pickle(
                     self.encoder,
@@ -332,6 +332,7 @@ class CSVDataSaver(IDataSaver):
             logger.error(f"Failed to save CSV: {e}")
             return False
 
+
 # TODO: Create the DataProcessor
 class DataProcessor:
     """This class combines all feature processing steps"""
@@ -346,7 +347,7 @@ class DataProcessor:
         self.splitter = splitter
         self.feature_engineers = feature_engineers
         self.saver = saver
-    
+
     def process(self) -> Dict[str, pd.DataFrame]:
         """This function loads the data, splits it, and applies feature engineering"""
         try:
@@ -390,11 +391,11 @@ class DataProcessor:
             save_status = self.saver.save(split_data["train"], f"{processed_path}/train.csv")
             if save_status:
                 logger.info(f"Successfully saved to csv")
-            
+
             self.saver.save(split_data["test"], f"{processed_path}/test.csv")
             logger.info("Feature engineering applied successfully!")
             return split_data
-        
+
         except Exception as e:
             logger.error(f"Data processing failed: {e}")
             raise
@@ -408,6 +409,20 @@ def main():
         usage="Module runs the feature engineering pipeline and saves the train and test sets as CSV."
     )
 
+    scale_default = [
+        "N",
+        "P",
+        "K",
+        "humidity",
+        "temperature",
+        "ph",
+        "rainfall"
+    ]
+
+    encode_default = [
+        "label"
+    ]
+
     argsparser.add_argument(
         "--data_path",
         required=True,
@@ -416,13 +431,13 @@ def main():
     argsparser.add_argument(
         "--scale",
         action="append",
-        default=[],
+        default=scale_default,
         help="Name(s) of the numerical column(s) to scale"
     )
     argsparser.add_argument(
         "--encode",
         action="append",
-        default=[],
+        default=encode_default,
         help="Name(s) of the categorical column(s) to encode"
     )
     args = argsparser.parse_args()

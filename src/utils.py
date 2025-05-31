@@ -18,6 +18,7 @@ import joblib
 
 PROJECT_ROOT = Path(__file__).parent.parent
 LOGS_DIR = PROJECT_ROOT / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # TODO: Configure logging

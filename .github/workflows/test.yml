@@ -9,46 +9,57 @@ on:
       - main
 
 jobs:
-    api-test:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v2
+  api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-          - name: Set up Python
-            uses: actions/setup-python@v2
-            with:
-              python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
 
-          - name: Install dependencies
-            run: |
-              python -m pip install --upgrade pip
-              pip install -r requirements.txt
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
 
-          - name: Run API tests
-            run: |
-              uvicorn main:app &
-              API_PID=$!
-              sleep 30
-              kill $API_PID
-              wait $API_PID || true
+      - name: Setup CML
+        uses: iterative/setup-cml@v1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run DVC pipeline
+        run: |
+          dvc pull
+          dvc repro train
+
+      - name: Run API tests
+        run: |
+          uvicorn main:app &
+          API_PID=$!
+          sleep 30
+          kill $API_PID
+          wait $API_PID || true
     
-    docker-test:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v2
+  docker-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-          - name: Set up Docker Compose
-            uses: docker/setup-compose-action@v1
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
 
-          - name: Build Docker Image
-            run: |
-              docker compose up -d --build
-          
-          - name: Test API endpoint from docker container
-            run: |
-              echo "Waiting for the API to start..."
-              sleep 60
-              curl -f http://localhost:8000/docs
-              docker stop $(docker ps -q --filter ancestor=agripredict)
+      - name: Build Docker Image
+        run: |
+          docker compose up -d --build
+      
+      - name: Test API endpoint from docker container
+        run: |
+          echo "Waiting for the API to start..."
+          sleep 60
+          curl -f http://localhost:65535/predict
+          docker stop $(docker ps -q --filter ancestor=agripredict)

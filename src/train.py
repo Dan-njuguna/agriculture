@@ -394,20 +394,20 @@ def main():
         results = pipeline.run_pipeline(args.models)
 
         # Print summary
-        print("\n" + "="*50)
-        print("TRAINING SUMMARY")
-        print("="*50)
+        logger.info("\n" + "="*50)
+        logger.info("TRAINING SUMMARY")
+        logger.info("="*50)
 
         for model_type, result in results['results'].items():
             eval_results = result['evaluation']
-            print(f"\n{model_type.upper()}:")
-            print(f"  Accuracy: {eval_results['accuracy']:.6f}")
-            print(f"  F1-Score: {eval_results['f1_score']:.6f}")
-            print(f"  CV Mean: {eval_results['cv_mean']:.6f} ± {eval_results['cv_std']:.6f}")
+            logger.info(f"\n{model_type.upper()}:")
+            logger.info(f"  Accuracy: {eval_results['accuracy']:.6f}")
+            logger.info(f"  F1-Score: {eval_results['f1_score']:.6f}")
+            logger.info(f"  CV Mean: {eval_results['cv_mean']:.6f} ± {eval_results['cv_std']:.6f}")
 
         best = results['best_model']
-        print(f"\n🏆 BEST MODEL: {best['type'].upper()}")
-        print(f"   Accuracy: {best['evaluation']['accuracy']:.6f}")
+        logger.info(f"\n🏆 BEST MODEL: {best['type'].upper()}")
+        logger.info(f"   Accuracy: {best['evaluation']['accuracy']:.6f}")
 
     except Exception as e:
         logger.error(f"❌ Main execution failed: {str(e)}")

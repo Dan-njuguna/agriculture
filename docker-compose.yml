@@ -15,4 +15,5 @@ services:
 
 networks:
   agripredict-network:
+    name: agripredict-network
     driver: bridge
