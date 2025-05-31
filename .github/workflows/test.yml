@@ -54,15 +54,12 @@ jobs:
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
 
-      - name: Build and Start Docker Compose services
+      - name: Build, Start and Test Docker Compose
         run: |
           docker compose up -d --build
 
-      - name: Debug API Container Logs
-        run: docker compose logs api
-
-      - name: Wait for API to be ready
-        run: |
+          docker compose logs api
+          
           echo "Waiting for the API to start on localhost:65535..."
           MAX_RETRIES=30
           RETRY_INTERVAL=5
