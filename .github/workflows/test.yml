@@ -59,7 +59,7 @@ jobs:
           docker compose up -d --build
 
       - name: Debug API Container Logs
-        run: docker compose logs agripredict-api
+        run: docker compose logs api
 
       - name: Wait for API to be ready
         run: |
