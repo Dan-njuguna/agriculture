@@ -25,26 +25,10 @@ from sklearn.model_selection import train_test_split
 
 # Import local custom modules
 sys.path.append(str(Path(__file__).parent.parent))
-from src.utils import save_to_csv, save_pickle
+from src.utils import save_to_csv, save_pickle, setup_logging
 
 # TODO: Define constants
-LOGS_DIR = os.path.join(Path(__file__).parent.parent, "logs", "preprocess.log")
-if not os.path.exists(Path(LOGS_DIR).resolve()):
-    os.makedirs(Path(LOGS_DIR).parent, exist_ok=True)
-
-
-# TODO: Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-file_handler = logging.FileHandler(
-    LOGS_DIR,
-    encoding="utf-8"
-)
-formatter = logging.Formatter(
-    fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+logger = setup_logging("preprocess.log")
 
 
 # TODO: Define a data loader
@@ -445,7 +429,10 @@ def main():
     loader = XLSXDataLoader(args.data_path)
 
     stratify_column = "label"
-    splitter = TrainTestSplitter(stratify=True, stratify_column=stratify_column)
+    splitter = TrainTestSplitter(
+        stratify=True,
+        stratify_column=stratify_column
+    )
 
     feature_engineers = []
     for col in args.scale:
