@@ -24,7 +24,7 @@ jobs:
 
       - name: Check Docker logs
         run: |
-          docker logs a
+          docker logs agripredict-api
 
       - name: Stop and Remove Docker Containers
         if: always()
