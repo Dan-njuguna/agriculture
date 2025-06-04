@@ -196,7 +196,7 @@ class BasicScaler(IFeatureEngineer):
             logger.info(f"Successfully transformed column {self.column}")
             return data
         else:
-            logger.erro(f"❌ No data fitted to scaler object ...")
+            logger.error(f"❌ No data fitted to scaler object ...")
             raise NotFittedError
 
     def engineer(
